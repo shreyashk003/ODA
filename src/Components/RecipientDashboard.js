@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import AvailableOrgans from "./AvailableOrgans";
 import RecipientProfile from "./RecipientProfile";
 import HealthStatus from "./HealthStatus";
-import RecipientSendMessage from "./RecipientSendMessage";
 
 const RecipientDashboard = () => {
   const [activeComponent, setActiveComponent] = useState("availableOrgans");
@@ -15,8 +14,6 @@ const RecipientDashboard = () => {
         return <HealthStatus />;
       case "profile":
         return <RecipientProfile />;
-      case "sendMessage":
-        return <RecipientSendMessage />;
       default:
         return <AvailableOrgans />;
     }
@@ -52,14 +49,7 @@ const RecipientDashboard = () => {
           >
             Profile
           </button>
-          <button
-            className={`text-left px-4 py-2 rounded-lg transition-colors duration-200 ${
-              activeComponent === "sendMessage" ? "bg-blue-500 text-white" : "hover:bg-gray-200"
-            }`}
-            onClick={() => setActiveComponent("sendMessage")}
-          >
-            Send Message to Donor
-          </button>
+          
         </nav>
       </div>
 

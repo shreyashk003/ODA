@@ -237,29 +237,69 @@ app.get('/api/organs', async (req, res) => {
 // GET current health status of recipient
 app.get('/api/recipient', async (req, res) => {
   try {
-    const recipientId = req.query.id; // optional if using login
+    const recipientId = req.query.id;
+
+    if (!recipientId) {
+      return res.status(400).json({ error: 'Recipient ID is required' });
+    }
+
     const health = await db.collection('healthstatus').findOne({ recipientId });
+
+    if (!health) {
+      return res.status(404).json({ error: 'Health status not found' });
+    }
+
     res.json(health);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch health status' });
+    console.error('Error fetching health status:', err.message);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// POST to update health status of recipient
-app.post('/api/update', async (req, res) => {
+app.put('/api/update', async (req, res) => {
   try {
-    const data = req.body;
-    await db.collection('healthstatus').updateOne(
-      { recipientId: data.recipientId },
-      { $set: data },
-      { upsert: true }
+    const { _id, ...updateData } = req.body;
+
+    if (!_id) return res.status(400).json({ error: 'Document ID is required' });
+
+    updateData.lastUpdated = new Date();
+
+    const result = await db.collection('healthstatus').updateOne(
+      { _id: new ObjectId(_id) },
+      { $set: updateData }
     );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ error: 'Health record not found' });
+    }
+
     res.json({ message: 'Health status updated successfully' });
   } catch (err) {
+    console.error('Update error:', err.message);
     res.status(500).json({ error: 'Failed to update health status' });
   }
 });
 
+app.get('/api/recipient-profile', async (req, res) => {
+  try {
+    // Hardcoded recipient username for now – you can replace with token/session logic
+    const username = 'vikas';
+
+    const profile = await db.collection('users').findOne({ username, role: 'recipient' });
+
+    if (!profile) {
+      return res.status(404).json({ error: 'Recipient profile not found' });
+    }
+
+    // Remove sensitive fields (like password)
+    delete profile.password;
+
+    res.json(profile);
+  } catch (err) {
+    console.error('Error fetching recipient profile:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 app.get("/organs", async (req, res) => {
   try {

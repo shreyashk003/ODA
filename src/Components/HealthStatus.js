@@ -3,22 +3,29 @@ import axios from "axios";
 
 const HealthStatus = () => {
   const [healthData, setHealthData] = useState({
+    _id: "",
+    recipientId: "",
     name: "",
     age: "",
     bloodGroup: "",
     condition: "",
     organNeeded: "",
     doctorRemarks: "",
+    lastUpdated: "",
   });
+
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const recipientId = "recp_001"; // Replace with dynamic value later (from user context)
 
   useEffect(() => {
-    // Fetch existing health data
     const fetchHealthData = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/recipient");
+        const res = await axios.get("http://localhost:5000/api/recipient", {
+          params: { id: recipientId },
+        });
+
         if (res.data) setHealthData(res.data);
       } catch (err) {
         console.error("Error fetching health data:", err);
@@ -36,7 +43,7 @@ const HealthStatus = () => {
 
   const handleSubmit = async () => {
     try {
-      await axios.post("http://localhost:5000/api/update", healthData);
+      await axios.put("http://localhost:5000/api/update", healthData);
       setSuccessMessage("Health status updated successfully.");
       setEditing(false);
       setTimeout(() => setSuccessMessage(""), 3000);
@@ -45,10 +52,10 @@ const HealthStatus = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className="text-center mt-10">Loading...</div>;
 
   return (
-    <div className="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md">
+    <div className="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md mt-10">
       <h2 className="text-2xl font-semibold mb-4 text-gray-800">Health Status</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -100,6 +107,13 @@ const HealthStatus = () => {
 
       {successMessage && (
         <div className="mt-4 text-green-600 font-medium">{successMessage}</div>
+      )}
+
+      {healthData.lastUpdated && (
+        <p className="mt-4 text-sm text-gray-500">
+          Last updated on:{" "}
+          {new Date(healthData.lastUpdated).toLocaleString()}
+        </p>
       )}
     </div>
   );

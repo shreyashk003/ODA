@@ -3,7 +3,6 @@ import { User, FileText, Settings, Bell, LogOut, Users, Database } from 'lucide-
 import ManageUsers from './ManageUsers';
 import MonitorRequests from './MonitorRequests'; // ✅ Import
 import DatabaseControl from './DatabaseControl'; // ✅ Import
-import AdminSettings from './AdminSettings';
 import Notifications from './Notifications'; // ✅ Import Notifications
 
 
@@ -16,7 +15,6 @@ const AdminDashboard = ({ user }) => {
     { key: 'monitorRequests', label: 'Monitor Requests', icon: <FileText size={20} />, color: 'bg-yellow-100 text-yellow-700' },
     { key: 'databaseControl', label: 'Database Control', icon: <Database size={20} />, color: 'bg-green-100 text-green-700' },
     { key: 'notifications', label: 'Notifications', icon: <Bell size={20} />, color: 'bg-red-100 text-red-700' },
-    { key: 'adminSettings', label: 'Settings', icon: <Settings size={20} />, color: 'bg-purple-100 text-purple-700' } // ✅ FIXED key here
   ];
   
 
@@ -28,8 +26,7 @@ const AdminDashboard = ({ user }) => {
         return <MonitorRequests />;
       case 'databaseControl':
         return <DatabaseControl />;
-      case 'adminSettings':
-        return <AdminSettings />;
+      
       case 'notifications':
         return <Notifications />; // ✅ Render Notifications
       default:
