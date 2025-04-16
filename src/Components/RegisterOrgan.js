@@ -53,7 +53,7 @@ const RegisterOrgan = ({ user }) => {
     <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-2xl p-8">
       <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2 mb-6">
         <Heart className="text-red-500" />
-        Organ Donation Registration 2025
+        Organ Donation Registration 2025 april
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
